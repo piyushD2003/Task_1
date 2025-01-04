@@ -129,7 +129,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
         
 
     @action(detail=False, methods=['post'])
-    def getdata(self, request, *args, **kwargs):
+    def getdata0(self, request, *args, **kwargs):
         Image = request.data.get("image")
         # organ = PIL.Image.open(Image)
         genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
@@ -144,9 +144,65 @@ class DoctorViewSet(viewsets.ModelViewSet):
         return Response(json_data, status=status.HTTP_200_OK)
     
 class imageprocess(viewsets.ViewSet):
-    print("hello")
     @action(detail=False, methods=['post'])
     def getdata(self, request, *args, **kwargs):
+
+        Image = request.data.get("image")
+        genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        organ = PIL.Image.open(Image)
+        print(organ)
+        response = model.generate_content([
+            '''Extract the following details from the given prescription image:
+
+                1. Patient Name: Extract the name of the patient mentioned.
+                2. Date: Extract the date in the format (YYYY-MM-DD).
+                3. Medications: For each medication, extract its name and dosage timing.
+
+                Guidelines for determining medication timing:
+                - The timing of the dosage is written after the medication name in the format (morning-afternoon-night), such as '1 -- (unrecognized character or symbol or anything) -- 1'. 
+                - Multiple variations are possible, including:
+                a. x-x-x / 1-x-x / x-1-x / x-x-1 / 1-1-x / 1-x-1 / x-1-1 
+                b. 1----------0---------1 / 0----------0---------1 / 0-----------1--------0 
+                c. x-----------x------------x / x----------x---------1 / x----------1-----------x / 1-----------x----------x 
+                or any variations thereof.
+                - Use these rules to determine the boolean values for timing:
+                - Any digit (e.g., 1, 1/2, 2) = true (indicates the medication is taken at this time).
+                - Any symbol (e.g., x, 0, >) = false (indicates the medication is not taken at this time).
+
+                Handle potential cursive handwriting where characters may appear connected or ambiguous. Preprocess the image to enhance clarity and separation of characters if necessary. Account for common misinterpretations where 'x' may look like '>', and ensure accurate interpretation based on context. Include potential variations like '1------x------1', '1--0--1', and other similar patterns to ensure robust handling of different styles. Utilize image processing techniques like binarization, noise removal, and character separation to improve the clarity and accuracy of the handwritten text extraction.
+
+                Provide the result in this exact JSON format:
+                {
+                    "patient_name": "Extracted Name",
+                    "date": "YYYY-MM-DD",
+                    "medications": [
+                        {
+                            "name": "Medication Name",
+                            "timing": {
+                                "morning": true/false,
+                                "afternoon": true/false,
+                                "night": true/false
+                            }
+                        },
+                        ...
+                    ]
+                }
+                Ensure accuracy in interpreting the timing, handle potential cursive handwriting, and extract only the required details.
+
+            ''', organ])
+        print(type(response.text))
+        json_str = response.text.strip().strip('```json').strip('```').strip()
+        json_data = json.loads(json_str)
+        print(type(json_data))
+
+        print(json_data['patient_name'])
+        print(json_data['date'])
+        print(json_data['medications'])
+        return Response(json_data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'])
+    def getdata0(self, request, *args, **kwargs):
         Image = request.data.get("image")
         # organ = PIL.Image.open(Image)
         genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
@@ -158,4 +214,119 @@ class imageprocess(viewsets.ViewSet):
         json_str = response.text.strip().strip('```json').strip('```').strip()
         json_data = json.loads(json_str)
         print(type(json_data))
+        return Response(json_data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['post'])
+    def getdata1(self, request, *args, **kwargs):
+
+        Image = request.data.get("image")
+        genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
+        model = genai.GenerativeModel("gemini-1.5-pro")
+        organ = PIL.Image.open(Image)
+        print(organ)
+        response = model.generate_content([
+            '''Extract the following details from the given prescription image:
+
+                1. Patient Name: Extract the name of the patient mentioned.
+                2. Date: Extract the date in the format (YYYY-MM-DD).
+                3. Medications: For each medication, extract its name and dosage timing.
+
+                Guidelines for determining medication timing:
+                - The timing of the dosage is written after the medication name in the format (morning-afternoon-night), such as '1 -- (unrecognized character or symbol or anything) -- 1'. 
+                - Multiple variations are possible, including:
+                a. x-x-x / 1-x-x / x-1-x / x-x-1 / 1-1-x / 1-x-1 / x-1-1 
+                b. 1----------0---------1 / 0----------0---------1 / 0-----------1--------0 
+                c. x-----------x------------x / x----------x---------1 / x----------1-----------x / 1-----------x----------x 
+                or any variations thereof.
+                - Use these rules to determine the boolean values for timing:
+                - Any digit (e.g., 1, 1/2, 2) = true (indicates the medication is taken at this time).
+                - Any symbol (e.g., x, 0, >) = false (indicates the medication is not taken at this time).
+
+                Handle potential cursive handwriting where characters may appear connected or ambiguous. Preprocess the image to enhance clarity and separation of characters if necessary. Account for common misinterpretations where 'x' may look like '>', and ensure accurate interpretation based on context. Include potential variations like '1------x------1', '1--0--1', and other similar patterns to ensure robust handling of different styles. Utilize image processing techniques like binarization, noise removal, and character separation to improve the clarity and accuracy of the handwritten text extraction.
+
+                Provide the result in this exact JSON format:
+                {
+                    "patient_name": "Extracted Name",
+                    "date": "YYYY-MM-DD",
+                    "medications": [
+                        {
+                            "name": "Medication Name",
+                            "timing": {
+                                "morning": true/false,
+                                "afternoon": true/false,
+                                "night": true/false
+                            }
+                        },
+                        ...
+                    ]
+                }
+                Ensure accuracy in interpreting the timing, handle potential cursive handwriting, and extract only the required details.
+
+            ''', organ])
+        print(type(response.text))
+        json_str = response.text.strip().strip('```json').strip('```').strip()
+        json_data = json.loads(json_str)
+        print(type(json_data))
+
+        print(json_data['patient_name'])
+        print(json_data['date'])
+        print(json_data['medications'])
+        return Response(json_data, status=status.HTTP_200_OK)
+    
+
+    @action(detail=False, methods=['post'])
+    def getdata2(self, request, *args, **kwargs):
+
+        Image = request.data.get("image")
+        genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
+        model = genai.GenerativeModel("gemini-2.0-flash-exp")
+        organ = PIL.Image.open(Image)
+        print(organ)
+        response = model.generate_content([
+            '''Extract the following details from the given prescription image:
+
+                1. Patient Name: Extract the name of the patient mentioned.
+                2. Date: Extract the date in the format (YYYY-MM-DD).
+                3. Medications: For each medication, extract its name and dosage timing.
+
+                Guidelines for determining medication timing:
+                - The timing of the dosage is written after the medication name in the format (morning-afternoon-night), such as '1 -- (unrecognized character or symbol or anything) -- 1'. 
+                - Multiple variations are possible, including:
+                a. x-x-x / 1-x-x / x-1-x / x-x-1 / 1-1-x / 1-x-1 / x-1-1 
+                b. 1----------0---------1 / 0----------0---------1 / 0-----------1--------0 
+                c. x-----------x------------x / x----------x---------1 / x----------1-----------x / 1-----------x----------x 
+                or any variations thereof.
+                - Use these rules to determine the boolean values for timing:
+                - Any digit (e.g., 1, 1/2, 2) = true (indicates the medication is taken at this time).
+                - Any symbol (e.g., x, 0, >) = false (indicates the medication is not taken at this time).
+
+                Handle potential cursive handwriting where characters may appear connected or ambiguous. Preprocess the image to enhance clarity and separation of characters if necessary. Account for common misinterpretations where 'x' may look like '>', and ensure accurate interpretation based on context. Include potential variations like '1------x------1', '1--0--1', and other similar patterns to ensure robust handling of different styles. Utilize image processing techniques like binarization, noise removal, and character separation to improve the clarity and accuracy of the handwritten text extraction.
+
+                Provide the result in this exact JSON format:
+                {
+                    "patient_name": "Extracted Name",
+                    "date": "YYYY-MM-DD",
+                    "medications": [
+                        {
+                            "name": "Medication Name",
+                            "timing": {
+                                "morning": true/false,
+                                "afternoon": true/false,
+                                "night": true/false
+                            }
+                        },
+                        ...
+                    ]
+                }
+                Ensure accuracy in interpreting the timing, handle potential cursive handwriting, and extract only the required details.
+
+            ''', organ])
+        print(type(response.text))
+        json_str = response.text.strip().strip('```json').strip('```').strip()
+        json_data = json.loads(json_str)
+        print(type(json_data))
+
+        print(json_data['patient_name'])
+        print(json_data['date'])
+        print(json_data['medications'])
         return Response(json_data, status=status.HTTP_200_OK)
