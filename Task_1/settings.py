@@ -55,7 +55,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Your frontend URL
-    "https://new-test-mauve.vercel.app"
+    "https://new-test-mauve.vercel.app",
+    "https://django-imageprocessing-api.vercel.app"
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 
