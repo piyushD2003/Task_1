@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions, status, viewsets
-from .models import User, Doctor
+from .models import User, Doctor, Records
 from .serializers import User_Serializer, Doctor_Serializer
 from itsdangerous import URLSafeSerializer
 from django.contrib.auth.hashers import check_password
