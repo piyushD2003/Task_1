@@ -146,8 +146,8 @@ Secret_key = "I am a good boy"
 class imageprocess(viewsets.ViewSet):
     @action(detail=False, methods=['post'])
     def getdata(self, request, *args, **kwargs):
-
-        Image = request.data.get("image")
+        Image = request.FILES.get("image")
+        # Image = request.data.get("image")
         genai.configure(api_key="AIzaSyCebg0e7O3GuI-0_E5QBaI7kgsdsSVyJ88")
         model = genai.GenerativeModel("gemini-1.5-flash")
         organ = PIL.Image.open(Image)
