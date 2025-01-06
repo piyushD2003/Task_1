@@ -199,6 +199,11 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
+        Records.objects.create(
+            patient_name = json_data['patient_name'],
+            date = json_data['date'],
+            medication = json_data['medications'],
+        )
         return Response(json_data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'])
@@ -214,6 +219,11 @@ class imageprocess(viewsets.ViewSet):
         json_str = response.text.strip().strip('```json').strip('```').strip()
         json_data = json.loads(json_str)
         print(type(json_data))
+        Records.objects.create(
+            patient_name = json_data['patient_name'],
+            date = json_data['date'],
+            medication = json_data['medications'],
+        )
         return Response(json_data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'])
@@ -271,6 +281,11 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
+        Records.objects.create(
+            patient_name = json_data['patient_name'],
+            date = json_data['date'],
+            medication = json_data['medications'],
+        )
         return Response(json_data, status=status.HTTP_200_OK)
     
 
@@ -329,4 +344,9 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
+        Records.objects.create(
+            patient_name = json_data['patient_name'],
+            date = json_data['date'],
+            medication = json_data['medications'],
+        )
         return Response(json_data, status=status.HTTP_200_OK)
