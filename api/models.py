@@ -26,3 +26,11 @@ class Doctor(models.Model):
     Photo = models.ImageField(upload_to="profile_image/", blank=True, null=True)
     def __str__(self):
         return self.Doctorname
+
+class Records(models.Model):
+    patient_name = models.CharField(max_length=100)
+    date = models.DateField()
+    medication = models.JSONField()
+
+    def __str__(self):
+        return self.patient_name

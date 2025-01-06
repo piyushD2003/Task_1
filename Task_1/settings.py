@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-yf8n+h!*kkjaoael6f64bi=!#c40rn*rad@5jd@p74utfliwc#
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app"]
-
+# ALLOWED_HOSTS = [".vercel.app"]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'api',
 ]
 
@@ -49,7 +50,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Your frontend URL
+    "https://new-test-mauve.vercel.app"
+]
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 
 ROOT_URLCONF = 'Task_1.urls'
 
