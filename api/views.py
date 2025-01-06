@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions, status, viewsets
-from .models import User, Doctor, Records
+from .models import User, Doctor
 from .serializers import User_Serializer, Doctor_Serializer
 from itsdangerous import URLSafeSerializer
 from django.contrib.auth.hashers import check_password
@@ -199,11 +199,7 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
-        Records.objects.create(
-            patient_name = json_data['patient_name'],
-            date = json_data['date'],
-            medication = json_data['medications'],
-        )
+
         return Response(json_data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'])
@@ -219,11 +215,7 @@ class imageprocess(viewsets.ViewSet):
         json_str = response.text.strip().strip('```json').strip('```').strip()
         json_data = json.loads(json_str)
         print(type(json_data))
-        Records.objects.create(
-            patient_name = json_data['patient_name'],
-            date = json_data['date'],
-            medication = json_data['medications'],
-        )
+
         return Response(json_data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'])
@@ -281,11 +273,7 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
-        Records.objects.create(
-            patient_name = json_data['patient_name'],
-            date = json_data['date'],
-            medication = json_data['medications'],
-        )
+
         return Response(json_data, status=status.HTTP_200_OK)
     
 
@@ -344,9 +332,5 @@ class imageprocess(viewsets.ViewSet):
         print(json_data['patient_name'])
         print(json_data['date'])
         print(json_data['medications'])
-        Records.objects.create(
-            patient_name = json_data['patient_name'],
-            date = json_data['date'],
-            medication = json_data['medications'],
-        )
+
         return Response(json_data, status=status.HTTP_200_OK)
